@@ -12,6 +12,13 @@
 // appear on new pages
 #let khw-newpages = state("khw:newpages", none)
 
+// Todo macro
+#let todo = box(
+  stroke: red,
+  outset: 4pt,
+  [To do...]
+)
+
 // Problem function
 #let prob-nr = counter("khw:problem")
 #let problem = (
@@ -86,7 +93,7 @@
   if newpages {
     khw-newpages.update(pagebreak(weak: true))
   }
-  
+
   set page(
     paper: "us-letter",
     margin: 1in,
@@ -104,18 +111,18 @@
   )
 
   set align(center)
-  
+
   // Title
   assert(title != none)
   text(size: 18pt, weight: "medium", title)
   linebreak()
-  
+
   // Course
   if course != none {
     text(size: 14pt, course)
     linebreak()
   }
-  
+
   // Author
   if author != none {
     author
@@ -128,7 +135,7 @@
     nicedate
     linebreak()
   }
-  
+
   parbreak()
 
   // Heading style
@@ -146,4 +153,3 @@
   show "%%date%%": nicedate
   doc
 }
-
