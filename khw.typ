@@ -12,6 +12,9 @@
 // appear on new pages
 #let khw-newpages = state("khw:newpages", none)
 
+// Stateful variable to control the default problem name
+#let khw-problemname = state("khw:problemname", "Problem")
+
 // Todo macro
 #let todo = box(
   stroke: red,
@@ -22,7 +25,7 @@
 // Problem function
 #let prob-nr = counter("khw:problem")
 #let problem = (
-  name: "Problem",
+  name: auto,
   newpage: auto,
   increment: 1,
   label: none,
@@ -42,11 +45,18 @@
   v(-6pt)
 
   // Problem heading/number and text
+  let problem-numbering = (..nums) => {
+    if name == auto {
+      khw-problemname.display()
+    } else {
+      name
+    } + numbering(" 1.", ..nums)
+  }
   grid(
     columns: (auto, 1fr),
     column-gutter: 1em,
     [#heading(
-      numbering: "Problem 1.",
+      numbering: problem-numbering,
       outlined: true,
       supplement: none,
       none
@@ -71,6 +81,7 @@
     ..args.named(),
     ..args.pos().map(it => {
       if type(it) == content {
+        set enum(numbering: "i)")
         block(breakable: false, it)
       } else {
         it
@@ -87,12 +98,16 @@
   author: none,
   date: datetime.today(),
   newpages: false,
+  problem-name: "Problem",
   doc
 ) = {
   // Save the value of newpages
   if newpages {
     khw-newpages.update(pagebreak(weak: true))
   }
+
+  // Save the value of problem-name
+  khw-problemname.update(problem-name)
 
   set page(
     paper: "us-letter",
@@ -104,6 +119,7 @@
     font: "EB Garamond",
     size: 11pt,
     number-type: "lining",
+    stylistic-set: 06,
   )
 
   set par(
