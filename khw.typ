@@ -149,7 +149,7 @@
   )
 
   set par(
-    leading: 0.5em,
+    leading: 5pt,
   )
 
   set align(center)
