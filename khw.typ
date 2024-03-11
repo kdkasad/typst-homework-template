@@ -22,6 +22,35 @@
   [To do...]
 )
 
+// Customized version of algo() from @preview/algo
+#import "@preview/algo:0.3.3": algo, comment, i, d
+#let algo = (..args, body) => {
+  let named = args.named()
+
+  // Add bold "procedure" in front of algorithm title
+  if named.at("header", default: none) == none {
+    let title = named.at("title")
+    if type(title) == "string" {
+      title = underline(smallcaps(title))
+    }
+    title = [*procedure* ] + title
+    named.insert("title", title)
+  }
+  args = arguments(..named, ..args.pos())
+
+  // Call underlying algo() function from @preview/algo
+  algo(
+    block-align: none,
+    stroke: 0.5pt + black,
+    row-gutter: 8pt,
+    indent-guides: 0.4pt + black,
+    indent-guides-offset: 2pt,
+    ..args,
+    body + h(1fr) // To make algo box take full text width
+  )
+}
+#let call = smallcaps // Helper for calling functions
+
 // Problem function
 #let prob-nr = counter("khw:problem")
 #let problem = (
