@@ -10,10 +10,10 @@
 
 // Stateful variable to control whether problems
 // appear on new pages
-#let khw-newpages = state("khw:newpages", none)
+#let _khw-newpages = state("_khw:newpages", none)
 
 // Stateful variable to control the default problem name
-#let khw-problemname = state("khw:problemname", "Problem")
+#let _khw-problem-name = state("_khw:problem-name", "Problem")
 
 // Todo macro
 #let todo = box(
@@ -52,7 +52,7 @@
 #let call = smallcaps // Helper for calling functions
 
 // Problem function
-#let prob-nr = counter("khw:problem")
+#let _khw-problem-number = counter("_khw:problem-number")
 #let problem = (
   name: auto,
   newpage: auto,
@@ -60,11 +60,11 @@
   label: none,
   content
 ) => {
-  prob-nr.update(n => n + increment) // Increment counter
+  _khw-problem-number.update(n => n + increment) // Increment counter
 
   // Page break if requested
   if newpage == auto {
-    khw-newpages.display()
+    _khw-newpages.display()
   } else if newpage == true {
     pagebreak(weak: true)
   }
@@ -76,7 +76,7 @@
   // Problem heading/number and text
   let problem-numbering = (..nums) => {
     if name == auto {
-      khw-problemname.display()
+      _khw-problem-name.display()
     } else {
       name
     } + numbering(" 1.", ..nums)
@@ -99,14 +99,11 @@
 }
 
 
-// Parts arguments list
-#let problemparts = arguments(
-  numbering: (..nums) => [*#numbering("a.i)", ..nums)*],
-  tight: false,
-)
+// Problem parts function
 #let parts = (..args) => {
   enum(
-    ..problemparts,
+    numbering: (..nums) => [*#numbering("a.i)", ..nums)*],
+    tight: false,
     ..args.named(),
     ..args.pos().map(it => {
       if type(it) == content {
@@ -120,7 +117,7 @@
 }
 
 
-// Template
+// Document template function
 #let khw(
   title: none,
   course: none,
@@ -132,11 +129,11 @@
 ) = {
   // Save the value of newpages
   if newpages {
-    khw-newpages.update(pagebreak(weak: true))
+    _khw-newpages.update(pagebreak(weak: true))
   }
 
   // Save the value of problem-name
-  khw-problemname.update(problem-name)
+  _khw-problem-name.update(problem-name)
 
   set page(
     paper: "us-letter",
@@ -191,10 +188,12 @@
   // Rest of document
   set align(left)
   set par(justify: true)
-  set enum(..problemparts)
   set pagebreak(weak: true)
   show "%%author%%": author
   show "%%title%%": title
   show "%%date%%": nicedate
   doc
 }
+
+// Alias for khw
+#let doc = khw
