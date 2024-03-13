@@ -127,6 +127,13 @@
   problem-name: "Problem",
   doc
 ) = {
+  // This has to be the first thing in the function body
+  set page(
+    paper: "us-letter",
+    margin: 1in,
+    numbering: "1",
+  )
+
   // Save the value of newpages
   if newpages {
     _khw-newpages.update(pagebreak(weak: true))
@@ -134,12 +141,6 @@
 
   // Save the value of problem-name
   _khw-problem-name.update(problem-name)
-
-  set page(
-    paper: "us-letter",
-    margin: 1in,
-    numbering: "1",
-  )
 
   set text(
     font: "EB Garamond",
