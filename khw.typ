@@ -10,7 +10,7 @@
 
 // Stateful variable to control whether problems
 // appear on new pages
-#let _khw-newpages = state("_khw:newpages", none)
+#let _khw-newpages = state("_khw:newpages", false)
 
 // Stateful variable to control the default problem name
 #let _khw-problem-name = state("_khw:problem-name", "Problem")
@@ -60,12 +60,11 @@
   label: none,
   content
 ) => {
-  _khw-problem-number.update(n => n + increment) // Increment counter
+  // Increment counter
+  _khw-problem-number.update(n => n + increment)
 
   // Page break if requested
-  if newpage == auto {
-    _khw-newpages.display()
-  } else if newpage == true {
+  context if ((newpage == auto) and (_khw-newpages.get() == true)) or (newpage == true) {
     pagebreak(weak: true)
   }
 
@@ -136,7 +135,7 @@
 
   // Save the value of newpages
   if newpages {
-    _khw-newpages.update(pagebreak(weak: true))
+    _khw-newpages.update(true)
   }
 
   // Save the value of problem-name
