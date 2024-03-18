@@ -22,6 +22,12 @@
   [To do...]
 )
 
+// Boxed function
+#let boxed = box.with(
+  stroke: 0.4pt + black,
+  outset: 3pt
+)
+
 // Customized version of algo() from @preview/algo
 #import "@preview/algo:0.3.3": algo, comment, i, d
 #let algo = (..args, body) => {
