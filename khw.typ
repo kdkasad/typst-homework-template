@@ -107,7 +107,7 @@
 // Problem parts function
 #let parts = (..args) => {
   enum(
-    numbering: (..nums) => [*#numbering("a.i)", ..nums)*],
+    numbering: (..nums) => [*#numbering("(a.i)", ..nums)*],
     tight: false,
     ..args.named(),
     ..args.pos().map(it => {
