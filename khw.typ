@@ -92,6 +92,7 @@
     [#heading(
       numbering: problem-numbering,
       outlined: true,
+      bookmarked: false,
       supplement: none,
       none
     ) #label],
