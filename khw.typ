@@ -158,6 +158,10 @@
     leading: 5pt,
   )
 
+  // Smaller figure captions
+  show figure.caption: it => text(size: text.size - 1.5pt, it)
+
+
   set align(center)
 
   // Title
