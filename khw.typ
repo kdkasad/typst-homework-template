@@ -8,6 +8,9 @@
 // SPDX-License-Identifier: BSD-3-Clause
 //
 
+#import "@preview/cetz:0.2.2"
+#import "@preview/algo:0.3.3": algo, comment, i, d
+
 // Stateful variable to control whether problems
 // appear on new pages
 #let _khw-newpages = state("_khw:newpages", false)
@@ -29,7 +32,6 @@
 )
 
 // Customized version of algo() from @preview/algo
-#import "@preview/algo:0.3.3": algo, comment, i, d
 #let algo = (..args, body) => {
   let named = args.named()
 
@@ -208,3 +210,93 @@
 
 // Alias for khw
 #let doc = khw
+
+// Function to lay out objects in a circle for CeTZ
+#let radiallayout = (
+  radius,
+  items,
+  draw_item,
+  start: 90deg,
+  end: auto,
+) => {
+  if end == auto {
+    end = start + 360deg
+  }
+  import cetz.draw: *
+  let n = items.len()
+  let delta = (end - start) / n
+  for i in range(n) {
+    let item = items.at(i)
+    // CeTZ uses (angle, radius) instead of (radius, angle)
+    draw_item((start + i * delta, radius), item)
+  }
+}
+
+// Function to generate a (di)graph in a radial layout
+#let radialgraph = (
+  directed: false,
+  nodes: (),
+  edges: (),
+  radius: 1.8cm,
+  radial-start: 90deg,
+  radial-end: auto,
+  text-args: (),
+  circle-args: (radius: 0.45cm),
+  mark-args: (scale: 1.4),
+  style-args: (),
+) => {
+  cetz.canvas({
+    import cetz.draw: *
+    set-style(
+      stroke: 0.65pt + black,
+      ..style-args,
+      circle: circle-args,
+    )
+    if directed {
+      set-style(mark: (end: (symbol: ">", fill: black, ..mark-args)))
+    }
+    radiallayout(
+      radius,
+      nodes,
+      (pos, node) => {
+        let (id, label) = if type(node) == array {
+          node
+        } else {
+          (node, node)
+        }
+        circle(pos, name: id)
+        content(id, text(..text-args, label))
+      },
+      start: radial-start,
+      end: radial-end,
+    )
+    for (src, dsts) in edges {
+      let (src, bend) = if type(src) == array {
+        src
+      } else {
+        (src, false)
+      }
+      if type(dsts) != array {
+        dsts = (dsts,)
+      }
+      for dst in dsts {
+        if bend {
+          // mid is the point 0.2cm left of the midpoint of the line when facing along the line
+          let mid = (
+            (src, 50%, dst),
+            0.2cm, 90deg,
+            dst
+          )
+          intersections("i",
+            src,
+            dst,
+            hide(arc-through(src, mid, dst))
+          )
+          arc-through("i.0", mid, "i.1")
+        } else {
+          line(src, dst)
+        }
+      }
+    }
+  })
+}
