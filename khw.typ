@@ -235,6 +235,7 @@
 // Function to generate a (di)graph in a radial layout
 #let radialgraph = (
   directed: false,
+  overlay: false,
   nodes: (),
   edges: (),
   radius: 1.8cm,
@@ -245,57 +246,171 @@
   mark-args: (scale: 1.4),
   style-args: (),
 ) => {
+  // Create drawing
   cetz.canvas({
     import cetz.draw: *
+
+    // Set style of elements
     set-style(
-      stroke: 0.65pt + black,
-      ..style-args,
-      circle: circle-args,
+      stroke: 0.65pt + black, // Default stroke
+      ..style-args, // User-supplied style specifications
+      circle: circle-args, // Circle style (for nodes)
     )
-    if directed {
-      set-style(mark: (end: (symbol: ">", fill: black, ..mark-args)))
+
+    // Convert all nodes in list from strings to tuples (id, label) if necessary
+    nodes = nodes.map(node-spec => {
+      if type(node-spec) != array {
+        (node-spec, node-spec)
+      } else {
+        node-spec.slice(0, 2)
+      }
+    })
+
+    // Function to draw a node.
+    // Takes a position and a node, which can be a string or a tuple (id, label)
+    let draw-node = (pos, (node-id, node-label)) => {
+      circle(pos, name: node-id)
+      content(node-id, text(..text-args, node-label))
     }
+
+    // Lay out nodes using radiallayout() and draw-node()
     radiallayout(
       radius,
       nodes,
-      (pos, node) => {
-        let (id, label) = if type(node) == array {
-          node
-        } else {
-          (node, node)
-        }
-        circle(pos, name: id)
-        content(id, text(..text-args, label))
-      },
+      draw-node,
       start: radial-start,
       end: radial-end,
     )
-    for (src, dsts) in edges {
-      let (src, bend) = if type(src) == array {
-        src
-      } else {
-        (src, false)
+
+    // Dictionary matrix which represents the graph graph-matrix.at(x).at(y) (x
+    // and y are node IDs) is a tuple of (count, drawn), where count is the
+    // number of edges from x to y and drawn is the number of those that have
+    // been drawn.
+    let graph-matrix = (:)
+    for (from-id, _) in nodes {
+      graph-matrix.insert(from-id, (:))
+      for (to-id, _) in nodes {
+        graph-matrix.at(from-id).insert(to-id, (0, 0))
       }
-      if type(dsts) != array {
-        dsts = (dsts,)
+    }
+
+    // Convert all destinations to arrays
+    edges = edges.map(((src, dst-spec)) => {
+      if type(dst-spec) != array {
+        dst-spec = (dst-spec,)
       }
-      for dst in dsts {
-        if bend {
-          // mid is the point 0.2cm left of the midpoint of the line when facing along the line
-          let mid = (
-            (src, 50%, dst),
-            0.2cm, 90deg,
+      (src, dst-spec)
+    })
+
+    // Iterate through edge specifications
+    for (src, dst-spec) in edges {
+      // Panic if the source or destinations are not in the list of nodes
+      let node-ids = nodes.map(it => it.at(0))
+      for node in (src, ..dst-spec) {
+        if not node-ids.contains(node) {
+          panic("Node " + node + "used in edge list but not found in list of nodes")
+        }
+      }
+
+      // Add each edge to the graph matrix
+      for dst in dst-spec {
+        graph-matrix.at(src).at(dst).at(0) += 1
+      }
+    }
+
+    // Draw edges
+    for (src, dest-spec) in edges {
+      for dst in dest-spec {
+        // Get the number of edges between src and dst. "count" will be the total
+        // number of edges to be drawn between these nodes (in both directions),
+        // and "drawn" will be the number already drawn.
+        let (count, drawn) = graph-matrix.at(src).at(dst)
+        let (rcount, rdrawn) = graph-matrix.at(dst).at(src)
+        count += rcount
+        drawn += rdrawn
+
+        // To properly bend edges, we have to make all edges go in the same
+        // direction. To do this, we make every edge go from the node with the
+        // lesser ID to the node with the greater ID.
+        let reverse = false
+        if src < dst {
+          (src, dst) = (dst, src)
+          reverse = true
+        }
+
+        // From here on, we can use "drawn" as the index of the current edge
+        // being drawn (starting at 0)
+
+        // Calculate the bend of this edge
+        let bend-step = 0.2cm
+        let (offset, angle) = if calc.rem(count, 2) == 0 {
+          // Even total number of edges: every edge is bent
+          let pair = calc.quo(drawn, 2) + 1 // The index of the pair this edge belongs to, starting at 1
+          if calc.rem(drawn, 2) == 0 {
+            // Even index edge, bends left
+            (bend-step * pair, 90deg)
+          } else {
+            // Odd index edge, bends right
+            (bend-step * pair, -90deg)
+          }
+        } else {
+          // Odd total number of edges: first edge is straight, all other edges are bent
+          let pair = calc.quo(drawn - 1, 2) + 1 // The index of the pair this edge belongs to, starting at 1
+          if drawn == 0 {
+            // First edge is straight
+            (0, 0deg)
+          } else if calc.rem(drawn - 1, 2) == 0 {
+            // Even index edge
+            (bend-step / 2 + bend-step * pair, 90deg)
+          } else {
+            // Odd index edge
+            (bend-step / 2 + bend-step * pair, -90deg)
+          }
+        }
+
+        if directed {
+          let key = if reverse {
+            "start"
+          } else {
+            "end"
+          }
+          let mark-arg-dict = (start: (), end: ())
+          mark-arg-dict.insert(key, (symbol: ">", fill: black, ..mark-args))
+          set-style(mark: mark-arg-dict)
+        }
+
+        // Arc functions fail if the midpoint is on a straight line, so we must check for that
+        if (overlay == true) or (offset == 0) or (angle == 0) {
+          line(src, dst)
+        } else {
+          // Calculate midpoint of the edge using interpolation coordinates
+          let midpoint = (
+            (src, 50%, dst), // Midpoint of the line from src to dst
+            offset, angle,
             dst
           )
+
+          // Draw an invisible arc from src to dst through the midpoint, and
+          // find the points where it intersects the borders of src and dst.
           intersections("i",
             src,
             dst,
-            hide(arc-through(src, mid, dst))
+            hide(arc-through(src, midpoint, dst))
           )
-          arc-through("i.0", mid, "i.1")
-        } else {
-          line(src, dst)
+
+          // Draw the arc between the two intersection points, passing through
+          // the midpoint.
+          arc-through("i.0", midpoint, "i.1")
         }
+
+        // Once we've drawn our edge, increment the drawn count
+        graph-matrix.at(src).at(dst).at(1) += 1
+
+        // If we swapped the src and dst, swap them back before processing the next edge
+        if reverse {
+          (src, dst) = (dst, src)
+        }
+
       }
     }
   })
