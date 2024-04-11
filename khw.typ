@@ -211,7 +211,31 @@
 // Alias for khw
 #let doc = khw
 
-// Function to lay out objects in a circle for CeTZ
+// Function to lay out objects in a circle for CeTZ.
+// The objects and method used to draw them are completely generic.
+//
+// Parameters:
+//
+//   radius: length
+//   Radius of the circle in which to lay out the objects.
+//
+//   items: array
+//   Array of objects to lay out.
+//
+//   draw_item: function (coordinate, item) => ()
+//   Callback function used to draw each item.
+//   This callback takes two arguments (in this order): the coordinate at which
+//   to draw the object, and the object to draw.
+//   This function is called for each element of the "items" array.
+//
+//   start: angle [default: 90deg]
+//   The angle at which the first item will be placed. The angle is measured
+//   counterclockwise from the east direction.
+//
+//   end: angle [default: auto]
+//   The angle at which the last item will be placed. The angle is measured
+//   counterclockwise from the east direction. If set to auto, a default of
+//   (start + 360deg) is used.
 #let radiallayout = (
   radius,
   items,
@@ -232,7 +256,62 @@
   }
 }
 
-// Function to generate a (di)graph in a radial layout
+// Function to generate a (di)graph in a radial layout.
+// Each node in the graph is placed along a circle, and edges are drawn between
+// them as specified.
+//
+// Parameters:
+//
+//   directed: bool [default: false]
+//   Whether or not the graph is directed. If true, arrows will be drawn at the
+//   destination end of each edge.
+//
+//   overlay: bool [default: false]
+//   Whether to overlap multiple edges between the same nodes. If true, edges
+//   will be overlapped, i.e. multiple edges will appear as one edge. If false,
+//   each successive edge will be bent so it is distinguishable from the other
+//   edges.
+//
+//   nodes: array of strings or array of (string, string) pairs [default: ()]
+//   Specifies the nodes of the graph.
+//   Each element describes a node. A single string is used as both the ID and
+//   the label for the node. A pair of strings, i.e. an array of length 2,
+//   specifies the ID and the label for the node, in that order.
+//
+//   edges: array of (string, string) or (string, array of strings) pairs [default: ()]
+//   Specifies the edges of the graph.
+//   Each element is a pair. The first element of this pair is the ID of the
+//   source node for an edge. The second element is either the destination
+//   node's ID, or an array of IDs, in which case an edge will be drawn from the
+//   source to each destination.
+//
+//   radius: length [default: 1.8cm]
+//   The radius of the circle on which the nodes will be placed.
+//
+//   radial-start: angle [default: 90deg]
+//   The angle at which the first node will be placed. The angle is measured
+//   counterclockwise from the east direction.
+//
+//   radial-end: angle [default: auto]
+//   The angle at which the last node will be placed. The angle is measured
+//   counterclockwise from the east direction. If set to auto, a default of
+//   (radial-start + 360deg) is used.
+//
+//   text-args: dictionary [default: (:)]
+//   Additional arguments to be passed to Typst's text() function for the node
+//   labels.
+//
+//   circle-args: dictionary [default: (radius: 0.45cm)]
+//   Additional arguments to be passed to CeTZ's cetz.draw.circle() function
+//   used to draw each node.
+//
+//   mark-args: dictionary [default: (symbol: ">", fill: black, scale: 1.4)]
+//   Additional arguments used to configure the arrowheads on directed edges.
+//   It is used as follows:
+//     cetz.draw.set-style(mark: (start: mark-args, end: mark-args))
+//
+//   style-args: dictionary [default: (:)]
+//   Additional arguments to be passed to CeTZ's cetz.draw.set-style() function.
 #let radialgraph = (
   directed: false,
   overlay: false,
@@ -241,10 +320,10 @@
   radius: 1.8cm,
   radial-start: 90deg,
   radial-end: auto,
-  text-args: (),
+  text-args: (:),
   circle-args: (radius: 0.45cm),
-  mark-args: (scale: 1.4),
-  style-args: (),
+  mark-args: (symbol: ">", fill: black, scale: 1.4),
+  style-args: (:),
 ) => {
   // Create drawing
   cetz.canvas({
@@ -375,7 +454,7 @@
             "end"
           }
           let mark-arg-dict = (start: (), end: ())
-          mark-arg-dict.insert(key, (symbol: ">", fill: black, ..mark-args))
+          mark-arg-dict.insert(key, mark-args)
           set-style(mark: mark-arg-dict)
         }
 
