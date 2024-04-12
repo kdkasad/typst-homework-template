@@ -424,13 +424,13 @@
         let bend-step = 0.2cm
         let (offset, angle) = if calc.rem(count, 2) == 0 {
           // Even total number of edges: every edge is bent
-          let pair = calc.quo(drawn, 2) // The index of the pair this edge belongs to, starting at 1
+          let pair = calc.quo(drawn, 2) + 1 // The index of the pair this edge belongs to, starting at 1
           if calc.rem(drawn, 2) == 0 {
             // Even index edge, bends left
-            (bend-step / 2 + bend-step * pair, 90deg)
+            (bend-step * pair, 90deg)
           } else {
             // Odd index edge, bends right
-            (bend-step / 2 + bend-step * pair, -90deg)
+            (bend-step * pair, -90deg)
           }
         } else {
           // Odd total number of edges: first edge is straight, all other edges are bent
