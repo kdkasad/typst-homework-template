@@ -312,6 +312,11 @@
 //
 //   style-args: dictionary [default: (:)]
 //   Additional arguments to be passed to CeTZ's cetz.draw.set-style() function.
+//
+//   additional-content: array [default: ()]
+//   Additional content to be drawn after the graph is drawn. Accepts a code
+//   block in which cetz.draw.* functions can be called. I.e. this argument
+//   should be the same as the argument to cetz.canvas().
 #let radialgraph = (
   directed: false,
   overlay: false,
@@ -324,6 +329,7 @@
   circle-args: (radius: 0.45cm),
   mark-args: (symbol: ">", fill: black, scale: 1.4),
   style-args: (:),
+  additional-content: (),
 ) => {
   // Create drawing
   cetz.canvas({
@@ -492,5 +498,7 @@
 
       }
     }
+
+    additional-content
   })
 }
