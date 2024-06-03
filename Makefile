@@ -1,5 +1,6 @@
 EXAMPLES := \
-	computer-science
+	computer-science \
+	english
 
 FONTSDIR := examples/fonts
 TYPST    := typst
