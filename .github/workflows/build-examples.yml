@@ -1,0 +1,37 @@
+name: Compile example documents
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'examples/**'
+      - khw.typ
+  pull_request:
+    branches:
+      - master
+
+env:
+  TYPST_VERSION: 0.11.1
+  TYPST_URL: https://github.com/typst/typst/releases/download/v$TYPST_VERSION/typst-x86_64-unknown-linux-musl.tar.xz
+
+jobs:
+  compile:
+    name: Compile example documents
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Check out sources
+        uses: actions/checkout@v4
+
+      - name: Download Typst binaries
+        run: curl -fsSL "${{ env.TYPST_URL }}" | tar -xJf - --strip-components 1 typst-x86_64-unknown-linux-musl/typst
+
+      - name: Compile documents
+        run: make -k -j TYPST="$PWD/typst" examples
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Example PDFs
+          path: examples/*.pdf
