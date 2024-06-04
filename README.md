@@ -82,6 +82,8 @@ Just like with problems, the parts are automatically numbered.
 
 The homework template includes a function to generate graph drawings from an edge list.
 
-The easiest way to learn how to use it is to look at `examples/computer-science/problem4.typ`.
+A good demonstration of how to use it is [in this discussion post](https://github.com/cetz-package/cetz/discussions/552#discussion-6492715).
+Also look at `examples/computer-science/problem4.typ`.
 
 The `radialgraph()` function includes a complete documentation comment in `khw.typ`.
+Use that to find all the available options and what they do.
