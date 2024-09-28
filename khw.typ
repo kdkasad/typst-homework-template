@@ -185,8 +185,9 @@
   }
 
   // Date
-  let nicedate = date.display("[month repr:long] [day padding:none], [year]")
+  let nicedate = none
   if date != none {
+    nicedate = date.display("[month repr:long] [day padding:none], [year]")
     nicedate
     linebreak()
   }
@@ -204,7 +205,9 @@
   set pagebreak(weak: true)
   show "%%author%%": author
   show "%%title%%": title
-  show "%%date%%": nicedate
+  if (date != none) {
+    show "%%date%%": nicedate
+  }
   doc
 }
 
