@@ -311,7 +311,7 @@ completely.
 ```typ
 #show <khw-problem-points>: smallcaps
 #show <khw-problem-prompt>: set text(blue)
-#show <khw-problem-number>: it => align(right, it)
+#show <khw-problem-number>: it => "#" + it
 #problem(points: 2)[
   #lorem(25)
 ]
