@@ -5,7 +5,7 @@
   course: [ENGL 123],
   author: "Kian Kasad",
   newpages: false,
-  problem-name: "Question",
+  problem-prefix: "Question",
 )
 
 #problem[

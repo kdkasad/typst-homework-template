@@ -1,21 +1,30 @@
-EXAMPLES := \
-	computer-science \
-	english
+EXAMPLES_DIR := examples
+TYPST        := typst
 
-FONTSDIR := examples/fonts
-TYPST    := typst
+EXAMPLES_TARGETS := $(patsubst %,%.pdf,$(filter-out %.pdf,$(wildcard $(EXAMPLES_DIR)/*)))
 
-EXAMPLES_TARGETS := $(patsubst %,examples/%.pdf,$(EXAMPLES))
+.PHONY: all
+all: examples manual.pdf
 
 .PHONY: examples
 examples: $(EXAMPLES_TARGETS)
 
-.SECONDEXPANSION:
-examples/%.pdf: examples/%/main.typ $(wildcard examples/%/*.typ) khw.typ
+manual.pdf: manual.typ khw.typ
 	$(info TYPST	$@)
-	@'$(TYPST)' compile --root . --font-path '$(FONTSDIR)' $< $@
+	@$(TYPST) compile --root . $< $@
+
+.SECONDEXPANSION:
+examples/%.pdf: examples/%/main.typ $(wildcard examples/%/*) khw.typ
+	$(info TYPST	$@)
+	@$(TYPST) compile --root . $< $@
 
 .PHONY: clean
 clean:
 	$(info RM	$(EXAMPLES_TARGETS))
 	@rm -f $(EXAMPLES_TARGETS)
+	$(info RM	manual.pdf)
+	@rm -f manual.pdf
+
+.PHON: clean-all-pdfs
+clean-all-pdfs:
+	find . -type f -name '*.pdf' -delete
