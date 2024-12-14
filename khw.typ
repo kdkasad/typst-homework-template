@@ -114,7 +114,6 @@
   let num = number
   if number == auto {
     _khw-problem-counter.step()
-    num = context _khw-problem-counter.display()
   }
 
   if (newpage == auto and _khw-newpages.get() == true) or (newpage == true) {
@@ -125,7 +124,15 @@
     line(length: 100%)
     if outlined {
       show heading: it => none
-      heading(numbering: none)[#_khw-problem-prefix.get() #num]
+      context heading(numbering: none, {
+        _khw-problem-prefix.get()
+        [ ]
+        if number == auto {
+          _khw-problem-counter.display()
+        } else {
+          number
+        }
+      })
     }
     grid(
       columns: (auto, 1fr),
@@ -143,13 +150,21 @@
           _content
         }
       ),
-      grid.cell(
+      context grid.cell(
         align: if align-number == auto {
           _khw-align-numbers.get()
         } else {
           align-number
         },
-        text(size: 48pt, weight: "black", num)
+        text(
+          size: 48pt,
+          weight: "black",
+          if number == auto {
+            _khw-problem-counter.display()
+          } else {
+            number
+          }
+        )
       ),
     )
     line(length: 100%)
