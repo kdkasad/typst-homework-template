@@ -120,7 +120,7 @@
     pagebreak()
   }
   v(24pt, weak: true)
-  block(breakable: false, {
+  [#block(breakable: false, {
     line(length: 100%)
     if outlined {
       show heading: it => none
@@ -138,17 +138,24 @@
       columns: (auto, 1fr),
       gutter: 12pt,
       align: top + left,
-      text(size: 16pt, weight: "bold", _khw-problem-prefix.get()),
+      grid.cell(
+        text(size: 16pt, weight: "bold", [
+          #_khw-problem-prefix.get()
+          <khw-problem-prefix>
+        ])
+      ),
       grid.cell(
         rowspan: 2,
-        {
-          if points != none {
-            [_(#points points)_]
-            h(4pt)
-          }
-          set enum(numbering: "(a)", tight: true)
-          _content
-        }
+        [
+          #{
+            if points != none {
+              [_(#points points)_ <khw-problem-points>]
+              h(4pt)
+            }
+            set enum(numbering: "(a)", tight: true)
+            _content
+          } <khw-problem-prompt>
+        ]
       ),
       context grid.cell(
         align: if align-number == auto {
@@ -159,16 +166,19 @@
         text(
           size: 48pt,
           weight: "black",
-          if number == auto {
-            _khw-problem-counter.display()
-          } else {
-            number
-          }
+          [
+            #if number == auto {
+              _khw-problem-counter.display()
+            } else {
+              number
+            }
+            <khw-problem-number>
+          ]
         )
-      ),
+      )
     )
     line(length: 100%)
-  })
+  }) <khw-problem-block>]
 }
 
 // Parts function {{{1
@@ -181,10 +191,11 @@
     numbering: _khw-parts-numbering.get(),
     tight: false,
     ..args.named(),
-    ..args.pos().map(it => {
-      set enum(numbering: "i.")
-      block(breakable: breakable, width: 100%, it)
-    })
+    ..args.pos().map(it => [
+      #set enum(numbering: "i.")
+      #block(breakable: breakable, width: 100%, it)
+      <khw-part>
+    ])
   )
 }
 

@@ -299,4 +299,45 @@ be numbered with lowercase Roman numerals. See @subparts.
 ```
 )[Solution with parts and sub-parts.] <subparts>
 
+= Customization
+
+In order to make easy customizations without having to modify
+```none khw.typ```, many of the elements produced by the
+document template are labeled. You can use `show` rules targeting the
+labeled elements to change their appearance or override them
+completely.
+
+#example(
+```typ
+#show <khw-problem-points>: smallcaps
+#show <khw-problem-prompt>: set text(blue)
+#show <khw-problem-number>: it => align(right, it)
+#problem(points: 2)[
+  #lorem(25)
+]
+```
+)[Customizing the template using labels and `show` rules.]
+
+== List of labels
+
+/ `<khw-problem-block>`: Attached to the entire block
+  printed at the start of the problem.
+
+/ `<khw-problem-prefix>`: Attached to the problem prefix text.
+
+/ `<khw-problem-number>`: Attached to the problem number. Note
+  that this labels the text itself, not the grid cell which
+  contains the number (and controls its alignment).
+  Unfortunatelly, there is not yet a way in Typst to label the
+  cell itself.
+
+/ `<khw-problem-points>`: Attached to the text which displays
+  a problem's point value.
+
+/ `<khw-problem-prompt>`: Attached to the paragraph which
+  contains the problem prompt.
+
+/ `<khw-part>`: Attached to each element of a `parts()` list.
+  This labels the `block()` containing the part's content.
+
 // vim: foldmethod=marker foldmarker={{{,}}} sw=2 ts=2 et tw=62

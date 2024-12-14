@@ -8,6 +8,8 @@
   problem-prefix: "Question",
 )
 
+#show <khw-problem-prompt>: text.with(purple)
+
 #problem[
   #lorem(10)
 ]
