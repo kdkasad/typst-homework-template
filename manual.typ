@@ -186,6 +186,14 @@ used to specify the problem prompt/question.
 ```
 )[Typesetting a problem using `problem()`.]
 
+If #link(<problem-arg-outlined>)[the `outlined` parameter] is
+not disabled, a first-level heading is created for each
+problem. If you need headings within problems, you should
+start with second-level headings.
+This also means that problems will appear in the table of
+contents (if your document has one) and in the table of
+contents embedded in the PDF's metadata (a.k.a. bookmarks).
+
 The `problem()` function takes the following optional
 arguments:
 
@@ -197,7 +205,7 @@ arguments:
 
 #arg(`points`, ("none", "str", "int", "float", "content"))[
   Specifies the point value of the problem. Defaults to
-  `none`.
+  `none`. See @points.
 
   #example(
   ```typ
@@ -205,7 +213,7 @@ arguments:
     #lorem(25)
   ]
   ```
-  )[Problem with points value specified.]
+  )[Problem with points value specified.] <points>
 ]
 
 #arg(`newpage`, ("auto", "bool"))[
@@ -228,7 +236,9 @@ arguments:
 #arg(`outlined`, ("bool",))[
   Whether this problem shows up in the outline. If `true`, an
   invisible ```typc heading()``` is created for this problem,
-  making it act like a regular heading. Defaults to `true`.
+  making it act like a regular heading.
+  Defaults to `true`.
+  <problem-arg-outlined>
 ]
 
 == Typesetting multi-part problems
@@ -240,7 +250,7 @@ response/solution.
 The content which makes up the prompt is displayed with
 a `set` rule that numbers regular lists using the format
 `"(a)"`. You can create a regular numbered list in the prompt
-to typeset a multi-part prompt.
+to typeset a multi-part prompt. See @prompt-parts.
 
 #example(
 ```typ
@@ -250,7 +260,7 @@ to typeset a multi-part prompt.
   + Spawning child processes.
 ]
 ```
-)[Multi-part problem prompt.]
+)[Multi-part problem prompt.] <prompt-parts>
 
 === In the response
 
@@ -260,9 +270,9 @@ make a function for typesetting parts. This also makes it
 quite easy to split up multi-part problems into separate
 source files.
 
-Use the `parts()` function to typeset multiple parts.
-
-Sample markup:
+Use the `parts()` function to typeset multiple parts in the
+solution.
+See @parts-function.
 
 #example(
 ```typ
@@ -274,10 +284,10 @@ Sample markup:
   process, rather than the entire space of mapped memory.
 ]
 ```
-)[Multi-part problem response.]
+)[Multi-part problem response.] <parts-function>
 
 Sub-parts can be typeset using a normal numbered list and will
-be numbered with lowercase Roman numerals.
+be numbered with lowercase Roman numerals. See @subparts.
 
 #example(
 ```typ
@@ -287,6 +297,6 @@ be numbered with lowercase Roman numerals.
   + #lorem(5)
 ]
 ```
-)[Solution with parts and sub-parts.]
+)[Solution with parts and sub-parts.] <subparts>
 
 // vim: foldmethod=marker foldmarker={{{,}}} sw=2 ts=2 et tw=62
