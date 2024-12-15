@@ -35,7 +35,16 @@
 
 // Layout/format settings {{{1
 #set par(justify: true)
-#set page(numbering: "1")
+#set page(
+  numbering: "1",
+  footer: [
+    #set text(9.5pt)
+    Kian's Homework Template Manual
+    #h(1fr)
+    #context counter(page).display()
+  ],
+  footer-descent: 40% + 0pt,
+)
 #set heading(numbering: (..nums) => numbering("1.1", ..nums) + h(1em))
 #set raw(lang: "typc")
 // 1}}}
@@ -62,6 +71,7 @@
     kind: "example",
     supplement: [Example],
     caption: caption,
+    placement: none,
     table(
       columns: (auto, 1fr,),
       align: left + horizon,
@@ -152,7 +162,7 @@ used to set default options for the ```typc problem()``` and
 
 #arg(`newpages`, ("bool",))[
   Whether to start each problem on a new page.
-  Defaults to false.
+  Defaults to `false`.
 ]
 
 #arg(`problem-prefix`, ("str",))[
@@ -170,6 +180,12 @@ used to set default options for the ```typc problem()``` and
   Numbering to use for
   parts of a problem. Takes a value which can be used as the
   argument to ```typc numbering()```.
+  Defaults to `"(a)"`, resulting in parts numbered (a), (b),
+  (c), etc.
+
+  Note that passing a function here will not work (currently).
+  This appears to be because Typst's `state` type cannot
+  handle storing functions, but I have not verified this.
 ]
 
 #pagebreak()
@@ -314,11 +330,11 @@ Here is some text. #todo
 
 = Customization
 
-In order to make easy customizations without having to modify
-```none khw.typ```, many of the elements produced by the
-document template are labeled. You can use `show` rules targeting the
-labeled elements to change their appearance or override them
-completely.
+In order to make more complicated customizations without
+having to modify ```none khw.typ```, many of the elements
+produced by the document template are labeled. You can use
+`show` rules targeting the labeled elements to change their
+appearance or override them completely.
 
 #example(
 ```typ
