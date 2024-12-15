@@ -92,7 +92,7 @@
 }
 
 // To-do placeholder {{{1
-#let todo = text(stroke: red, fill: red, size: 18pt)[TODO]
+#let todo = text(red, size: 18pt)[[To do]]
 
 // Problem function {{{1
 #let problem(

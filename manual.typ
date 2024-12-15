@@ -1,4 +1,4 @@
-#import "khw.typ": khw, problem as _problem, parts
+#import "khw.typ": khw, problem as _problem, parts, todo
 
 #set document(
   title: [Manual for Kian's Homework Template],
@@ -80,6 +80,7 @@
             scope: (
               parts: parts,
               problem: problem,
+              todo: todo,
             )
           )
         )
@@ -298,6 +299,18 @@ be numbered with lowercase Roman numerals. See @subparts.
 ]
 ```
 )[Solution with parts and sub-parts.] <subparts>
+
+== To-do markers
+You can use the `todo` variable to mark things you need to
+come back to later.
+
+#example(
+```typ
+#import "khw.typ": todo
+
+Here is some text. #todo
+```
+)[The to-do marker.]
 
 = Customization
 
