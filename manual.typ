@@ -137,8 +137,9 @@ it to all content using a show rule:
 )[Document setup code.]
 
 The `title` and `author` fields are used to print a title
-block on the first page, as well as to set the document's
-metadata using ```typc document()```.
+block on the first page, set the document's metadata using
+```typc document()```, and print a header on every page except
+the first.
 
 The `khw()` function supports the following optional parameters:
 
@@ -188,7 +189,20 @@ used to set default options for the ```typc problem()``` and
   handle storing functions, but I have not verified this.
 ]
 
-#pagebreak()
+== Page header
+On every page except the first, a header will be displayed,
+consisting of the course and title on the left and the author
+on the right.
+
+The course is preprocessed in a special way: if the `course`
+parameter to the `khw()` function was a string, a _course
+prefix separator_ and everything after it is removed.
+The course prefix separator is anything that matches the
+following regular expression: ```regex (:\s+|\s+-+\s+)```.
+This allows you to print something like "CS 250: Computer
+Architecture" in the title block while still keeping the
+header short enough.
+
 == Typesetting problems
 Use the `problem()` function to typeset a problem. The
 function takes a non-optional content argument which can be

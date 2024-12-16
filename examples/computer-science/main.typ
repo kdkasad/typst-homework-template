@@ -3,7 +3,7 @@
 
 #show: khw.with(
   title: [Homework 3],
-  course: "CS 250",
+  course: "CS 250: Computer Architecture",
   author: "Kian Kasad",
 )
 

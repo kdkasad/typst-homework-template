@@ -72,17 +72,36 @@
   set math.equation(numbering: "(1)")
   set page(numbering: "1")
 
+  // Page header {{{2
+  set page(
+    header-ascent: 50%,
+    header: context {
+      set text(10pt)
+      let pagenum = counter(page).get().first()
+      if pagenum != 1 {
+        if course != none {
+          if type(course) == str {
+            course.replace(regex("(:\s+|\s+-+\s+).*$"), "")
+          } else {
+            course
+          }
+          [ --- ]
+        }
+        title
+        h(1fr)
+        author
+      }
+    }
+  )
+
   // Title block {{{2
   if title != none {
     align(center, {
-      text(weight: "bold", size: 18pt, {
-        if course != none {
-          course + [ --- ]
-        }
-        title
-      })
-      parbreak()
-      author
+      text(18pt, weight: "bold", title)
+      linebreak()
+      text(12pt, course)
+      linebreak()
+      text(12pt, author)
     })
     v(1cm, weak: true)
   }
