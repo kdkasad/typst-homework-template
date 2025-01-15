@@ -245,6 +245,21 @@ contents embedded in the PDF's metadata (a.k.a. bookmarks).
 The `problem()` function takes the following optional
 arguments:
 
+#arg(`prefix`, ("auto", "str", "content", "none"))[
+  Specifies the word to place before the problem number.
+  When `auto`, the value of the ```typc problem-prefix```
+  argument to the ```typc khw()``` function is used.
+  Defaults to `auto`.
+
+  #example(
+  ```typ
+  #problem(prefix: "Exercise")[
+    #lorem(25)
+  ]
+  ```
+  )[Problem with prefix specified.]
+]
+
 #arg(`number`, ("auto", "str", "content"))[
   Specifies the number of the problem. When `auto`, problems
   are automatically numbered sequentially starting from 1.

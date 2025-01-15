@@ -115,6 +115,7 @@
 
 // Problem function {{{1
 #let problem(
+  prefix: auto,
   number: auto,
   points: none,
   newpage: auto,
@@ -123,6 +124,7 @@
   _content
 ) = context {
   // Check arguments
+  checktype(prefix, auto, str, content, none, "Prefix must be auto, string, content, or none.")
   checktype(number, auto, str, content, "Number must be auto, string, or content.")
   checktype(points, none, str, int, float, content, "Points must be string, integer, float, or content.")
   checktype(newpage, auto, bool, "Newpage must be auto or boolean.")
@@ -144,7 +146,7 @@
     if outlined {
       show heading: it => none
       context heading(numbering: none, {
-        _khw-problem-prefix.get()
+        if prefix == auto { _khw-problem-prefix.get() } else { prefix }
         [ ]
         if number == auto {
           _khw-problem-counter.display()
@@ -159,7 +161,7 @@
       align: top + left,
       grid.cell(
         text(size: 16pt, weight: "bold", [
-          #_khw-problem-prefix.get()
+          #{ if prefix == auto { _khw-problem-prefix.get() } else { prefix } }
           <khw-problem-prefix>
         ])
       ),
