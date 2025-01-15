@@ -45,7 +45,16 @@
   ],
   footer-descent: 40% + 0pt,
 )
-#set heading(numbering: (..nums) => numbering("1.1", ..nums) + h(1em))
+#set heading(numbering: (..nums) => numbering("1.1", ..nums))
+#show heading: (it) => {
+  block({
+    if it.numbering != none {
+      counter(heading).display(it.numbering)
+      h(1em)
+    }
+    it.body
+  })
+}
 #set raw(lang: "typc")
 // 1}}}
 
@@ -157,6 +166,13 @@ The `khw()` function supports the following optional parameters:
   Defaults to ```typc datetime.today()```.
 ]
 
+#arg(`course`, ("content", "string", "none"))[
+  Course for which the document is being written.
+  Defaults to `none`.
+  See also @sec:page-header for details on how the course name is
+  shortened for use in the page header.
+]
+
 The following options do not take effect immediately, but are
 used to set default options for the ```typc problem()``` and
 ```typc parts()``` functions provided by this template.
@@ -189,7 +205,7 @@ used to set default options for the ```typc problem()``` and
   handle storing functions, but I have not verified this.
 ]
 
-== Page header
+== Page header <sec:page-header>
 On every page except the first, a header will be displayed,
 consisting of the course and title on the left and the author
 on the right.
@@ -201,7 +217,8 @@ The course prefix separator is anything that matches the
 following regular expression: ```regex (:\s+|\s+-+\s+)```.
 This allows you to print something like "CS 250: Computer
 Architecture" in the title block while still keeping the
-header short enough.
+header short enough. In this case, only "CS 250" would appear
+in the page header.
 
 == Typesetting problems
 Use the `problem()` function to typeset a problem. The
