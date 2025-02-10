@@ -174,6 +174,7 @@
               h(4pt)
             }
             set enum(numbering: "(a)", tight: true)
+            set math.equation(numbering: none)
             _content
           } <khw-problem-prompt>
         ]
