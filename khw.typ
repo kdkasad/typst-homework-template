@@ -259,6 +259,9 @@
 }
 #let call = smallcaps // Helper for calling functions
 
+// Dashed problem divider {{{1
+#let divider = line(length: 100%, stroke: (thickness: 0.5pt, dash: "dashed"))
+
 // 1}}}
 
 // vim: set formatoptions+=n textwidth=59 foldmethod=marker foldmarker={{{,}}}:
