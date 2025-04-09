@@ -28,6 +28,9 @@
 #let _khw-problem-counter = counter("_khw-problem-counter")
 #let problemnr = _khw-problem-counter  // For exporting
 
+// To-do placeholder {{{1
+#let todo = text(red, size: 18pt)[[To do]]
+
 // Document template function {{{1
 #let khw(
   title: none,
@@ -71,6 +74,7 @@
   set table(stroke: 0.6pt)
   set math.equation(numbering: "(1)")
   set page(numbering: "1")
+  show "<++>": todo
 
   // Page header {{{2
   set page(
@@ -109,9 +113,6 @@
   // Document body {{{2
   body
 }
-
-// To-do placeholder {{{1
-#let todo = text(red, size: 18pt)[[To do]]
 
 // Problem function {{{1
 #let problem(
