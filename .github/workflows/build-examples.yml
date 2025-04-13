@@ -7,12 +7,13 @@ on:
     paths:
       - 'examples/**'
       - khw.typ
+      - .github/workflows/build-examples.yml
   pull_request:
     branches:
       - master
 
 env:
-  TYPST_VERSION: 0.11.1
+  TYPST_VERSION: 0.13.1
   TYPST_URL: https://github.com/typst/typst/releases/download/v$TYPST_VERSION/typst-x86_64-unknown-linux-musl.tar.xz
 
 jobs:
