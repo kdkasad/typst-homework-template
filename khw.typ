@@ -75,6 +75,7 @@
   set math.equation(numbering: "(1)")
   set page(numbering: "1")
   show "<++>": todo
+  show link: it => underline(text(blue.darken(10%), it))
 
   // Page header {{{2
   set page(
