@@ -75,7 +75,22 @@
   set math.equation(numbering: "(1)")
   set page(numbering: "1")
   show "<++>": todo
+  show heading: it => {
+    place.flush()
+    it
+  }
+
+  // Style settings {{{2
+  // Make links blue and underlined
   show link: it => underline(text(blue.darken(10%), it))
+  // Make figures float
+  set figure(placement: auto)
+  // Use em dash instead of colon in figure captions
+  set figure.caption(separator: [ --- ])
+  // Make raw text smaller and gray
+  show raw: set text(8pt, black.lighten(40%))
+  // Indent raw text blocks
+  show raw.where(block: true): pad.with(x: 2em)
 
   // Page header {{{2
   set page(
@@ -101,14 +116,19 @@
 
   // Title block {{{2
   if title != none {
-    align(center, {
-      text(18pt, weight: "bold", title)
-      linebreak()
-      text(12pt, course)
-      linebreak()
-      text(12pt, author)
-    })
-    v(1cm, weak: true)
+    place(
+      top + center,
+      float: true,
+      scope: "parent",
+      clearance: 1cm,
+      {
+        text(18pt, weight: "bold", title)
+        linebreak()
+        text(12pt, course)
+        linebreak()
+        text(12pt, author)
+      }
+    )
   }
 
   // Document body {{{2
