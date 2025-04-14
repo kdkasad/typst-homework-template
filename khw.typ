@@ -90,7 +90,7 @@
   // Make raw text smaller and gray
   show raw: set text(8pt, black.lighten(40%))
   // Indent raw text blocks
-  show raw.where(block: true): pad.with(x: 2em)
+  show raw.where(block: true): pad.with(x: 1em)
 
   // Page header {{{2
   set page(
