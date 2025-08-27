@@ -192,7 +192,8 @@
         [
           #{
             if points != none {
-              [_(#points points)_ <khw-problem-points>]
+              let suffix = if points == 1 { "" } else { "s" }
+              [_(#points point#suffix)_ <khw-problem-points>]
               h(4pt)
             }
             set enum(numbering: "(a)", tight: true)
